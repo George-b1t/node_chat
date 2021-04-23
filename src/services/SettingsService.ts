@@ -20,8 +20,8 @@ class SettingsService {
     });
 
     if (userAlreadyExists) {
-      throw new Error('User already exists!')
-    }
+      throw new Error('User already exists!');
+    };
 
     const settings = this.settingsRepository.create({
       username,
@@ -31,7 +31,25 @@ class SettingsService {
     await this.settingsRepository.save(settings);
 
     return settings;
-  }
-}
+  };
+
+  async findByUsername(username: string) {
+    const settings = await this.settingsRepository.findOne({
+      username
+    });
+
+    return settings;
+  };
+
+  async update(username: string, chat: boolean) {
+    const settings = await this.settingsRepository.createQueryBuilder()
+      .update(Settings)
+      .set({ chat })
+      .where("username = :username", {
+        username
+      })
+      .execute();
+  };
+};
 
 export { SettingsService }
